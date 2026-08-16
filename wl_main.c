@@ -1893,6 +1893,22 @@ static void InitPS2MemoryCard(void)
 #endif
 
 int main (int argc, char *argv[])
+
+#if defined(PS2)
+#include <kernel.h>
+#include <sifrpc.h>
+#include <fileXio_rpc.h>
+
+void InitPS2Drivers(void)
+{
+    SifInitRpc(0);
+    // Initialize fileXio for robust device handling (mc0:/, cdfs:/)
+    fileXioInit();
+    
+    // Load and init memory card modules if not already loaded by your crt0 / loader
+    // (Usually handles mcman and mcserv)
+}
+#endif
 {
 #if defined(_arch_dreamcast)
     DC_Init();
