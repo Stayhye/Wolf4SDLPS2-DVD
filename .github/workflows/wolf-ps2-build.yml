@@ -47,4 +47,4 @@ jobs:
         with:
           name: Wolf4SDL-PS2-Binary
           path: "**/*.elf"
-```[cite: 1]
+
