@@ -18,6 +18,11 @@
 #	include <string.h>
 #	include <stdarg.h>
 #endif
+
+#ifdef PS2
+    chdir("cdfs:/WOLF");
+#endif
+
 #include <SDL.h>
 
 #if !defined O_BINARY
