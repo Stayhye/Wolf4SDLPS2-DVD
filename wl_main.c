@@ -11,7 +11,9 @@
 #include "wl_atmos.h"
 #include <SDL_syswm.h>
 
-
+#ifdef PS2
+    chdir("cdfs:/WOLF");
+#endif
 /*
 =============================================================================
 
