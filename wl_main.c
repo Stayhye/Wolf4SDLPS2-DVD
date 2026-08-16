@@ -1848,11 +1848,14 @@ void CheckParameters(int argc, char *argv[])
             " --ignorenumchunks      Ignores the number of chunks in VGAHEAD.*\n"
             "                        (may be useful for some broken mods)\n"
             " --configdir <dir>      Directory where config file and save games are stored\n"
-#if defined(_arch_dreamcast) || defined(_WIN32) || defined(PS2)
-            "                        (default: $HOME/ WOLF)\n"
+#if defined(_arch_dreamcast) || defined(_WIN32)
+            "                                   (default: current directory)\n"
+#elif defined(PS2)
+            "                                   (default: cdfs:/WOLF)\n"
 #else
-            "                        (default: $HOME/.wolf4sdl)\n"
+            "                                   (default: $HOME/.wolf4sdl)\n"
 #endif
+
 #if defined(SPEAR) && !defined(SPEARDEMO)
             " --mission <mission>    Mission number to play (0-3)\n"
             "                        (default: 0 -> .sod, 1-3 -> .sd*)\n"
