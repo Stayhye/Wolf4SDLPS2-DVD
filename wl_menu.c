@@ -4016,13 +4016,23 @@ CheckForEpisodes (void)
     // On Linux like systems, the configdir defaults to $HOME/.wolf4sdl
 #if !defined(_WIN32) && !defined(_arch_dreamcast) && !defined(PS2)
 
-if (configdir[0] == 0)
-{
-    char *homedir = getenv("HOME");
-    if (homedir == NULL)
+#if defined(PS2)
+    if (configdir[0] == 0)
     {
-        Quit("Your $HOME directory is not defined. You must set this before playing.");
+        snprintf(configdir, sizeof(configdir), "cdfs:/WOLF");
     }
+#else
+    // On Linux like systems, the configdir defaults to $HOME/.wolf4sdl
+    if (configdir[0] == 0)
+    {
+        char *homedir = getenv("HOME");
+        if (homedir == NULL)
+        {
+            Quit("Your $HOME directory is not defined. You must set this before playing.");
+        }
+        // ... rest of the Linux home directory logic
+    }
+#endif
 
     #define WOLFDIR "/.wolf4sdl"
 
