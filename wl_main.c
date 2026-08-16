@@ -1884,6 +1884,10 @@ int main (int argc, char *argv[])
     CheckParameters(argc, argv);
 #endif
 
+#if defined(PS2)
+    InitPS2MemoryCard();
+#endif
+
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <errno.h>
