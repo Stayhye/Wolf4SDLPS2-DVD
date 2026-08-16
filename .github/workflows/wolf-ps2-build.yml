@@ -1,0 +1,56 @@
+name: Build Wolf4SDL-PS2
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ps2dev/ps2dev:latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install System Dependencies
+        run: apk add --no-cache make git gcc build-base
+
+      - name: Install SDL Ports
+        run: |
+          ps2-portman -S sdl sdl_mixer sdl_image || true
+
+      - name: Patch Source Code
+        run: |
+          # Injecting the missing SDL_HINT and Controller definitions 
+          # directly into the header/source files.
+          
+          # Fix id_in.h (Controller Button Max)
+          sed -i '1s/^/#define SDL_CONTROLLER_BUTTON_MAX 21\n/' id_in.h
+          
+          # Fix id_vl.c (GS Hints)
+          sed -i '1s/^/#define SDL_HINT_PS2_GS_HEIGHT "PS2_GS_HEIGHT"\n/' id_vl.c
+          sed -i '1s/^/#define SDL_HINT_PS2_GS_WIDTH "PS2_GS_WIDTH"\n/' id_vl.c
+          sed -i '1s/^/#define SDL_HINT_PS2_GS_X "PS2_GS_X"\n/' id_vl.c
+          sed -i '1s/^/#define SDL_HINT_PS2_GS_Y "PS2_GS_Y"\n/' id_vl.c
+          sed -i '1s/^/#define _BOOLEAN_DEFINED\n/' id_vl.c
+
+      - name: Compile Wolf4SDL
+        run: |
+          export PS2SDK_PORTS=$PS2DEV/ps2sdk/ports
+          
+          # Force the compiler to use these include paths
+          export INCLUDES="-I$PS2SDK_PORTS/include/SDL -I$PS2SDK_PORTS/include -I$PS2DEV/ps2sdk/ee/include"
+          
+          make clean || true
+
+          # Building with the -w flag to suppress noise and -D_EE for target identification
+          if [ -f Makefile.ps2 ]; then
+            make -f Makefile.ps2 CC="ee-gcc -w -D_EE $INCLUDES" CXX="ee-g++ -w -D_EE $INCLUDES"
+          else
+            make CC="ee-gcc -w -D_EE $INCLUDES" CXX="ee-g++ -w -D_EE $INCLUDES"
+          fi
+
+      - name: Upload ELF Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Wolf4SDL-PS2-Binary
+          path: "**/*.elf"
