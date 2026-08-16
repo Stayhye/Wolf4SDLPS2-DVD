@@ -31,7 +31,7 @@ void PM_Startup (void)
     uint32_t pagesize;
     int32_t  filesize,datasize;
     FILE     *file;
-    char     fname[13] = "vswap.";
+    char     fname[13] = "VSWAP.";
 
     strcat (fname,extension);
 

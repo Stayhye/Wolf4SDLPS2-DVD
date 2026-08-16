@@ -4112,9 +4112,9 @@ if (configdir[0] == 0)
         Quit ("NO WOLFENSTEIN 3-D DATA FILES to be found!");
 #else
 #ifndef SPEAR
-    if(!stat("./vswap.wl6", &statbuf))
+    if(!stat("./VSWAP.WL6", &statbuf))
     {
-        strcpy (extension, "wl6");
+        strcpy (extension, "WL6");
         NewEmenu[2].active =
             NewEmenu[4].active =
             NewEmenu[6].active =
