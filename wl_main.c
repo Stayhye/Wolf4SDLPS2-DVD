@@ -1888,6 +1888,10 @@ int main (int argc, char *argv[])
     InitPS2MemoryCard();
 #endif
 
+    CheckForEpisodes();
+
+    InitGame();
+	
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <errno.h>
@@ -1917,10 +1921,6 @@ void InitPS2MemoryCard()
     }
 }
 #endif
-
-    CheckForEpisodes();
-
-    InitGame();
 
     DemoLoop();
 
