@@ -36,7 +36,7 @@ int      screenBits = 16;
 boolean usedoublebuffering = true;
 unsigned screenWidth = 640;
 unsigned screenHeight = 448;
-int      screenBits = -1;      // use "best" color depth according to libSDL
+int      screenBits = 8;      // use "best" color depth according to libSDL
 #endif
 
 SDL_Surface *screen = NULL;
