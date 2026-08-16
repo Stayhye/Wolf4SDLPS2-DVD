@@ -109,7 +109,18 @@ typedef	int		ScanCode;
 #define	sc_X			SDLK_x
 #define	sc_Y			SDLK_y
 #define	sc_Z			SDLK_z
+
 #ifdef PS2
+#ifndef SDL_CONTROLLER_BUTTON_MAX
+#define SDL_CONTROLLER_BUTTON_MAX 21
+#endif
+#ifndef SDL_HINT_PS2_GS_WIDTH
+#define SDL_HINT_PS2_GS_WIDTH "PS2_GS_WIDTH"
+#endif
+#ifndef SDL_HINT_PS2_GS_HEIGHT
+#define SDL_HINT_PS2_GS_HEIGHT "PS2_GS_HEIGHT"
+#endif
+
 #define gcbt_None SDL_CONTROLLER_BUTTON_INVALID
 #define gcbt_A SDL_CONTROLLER_BUTTON_A
 #define gcbt_B SDL_CONTROLLER_BUTTON_B
