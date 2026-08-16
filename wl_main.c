@@ -1856,7 +1856,7 @@ void CheckParameters(int argc, char *argv[])
 
 #if defined(SPEAR) && !defined(SPEARDEMO)
             " --mission <mission>    Mission number to play (0-3)\n"
-            "                        (default: 0 -> .sod, 1-3 -> .sd*)\n"
+            "                        (default: 0 -> .SOD, 1-3 -> .sd*)\n"
             " --goodtimes            Disable copy protection quiz\n"
 #endif
             , defaultSampleRate
