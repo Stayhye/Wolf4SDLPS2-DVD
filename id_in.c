@@ -585,19 +585,24 @@ void IN_ProcessEvents()
 //	IN_Startup() - Starts up the Input Mgr
 //
 ///////////////////////////////////////////////////////////////////////////
-void
-IN_Startup(void)
+void IN_Startup(void)
 {
-	if (IN_Started)
-		return;
+    if (IN_Started)
+        return;
 
     IN_ClearKeysDown();
 
     if(param_joystickindex >= 0 && param_joystickindex < SDL_NumJoysticks())
     {
 #ifdef PS2
-        if (!SDL_IsGameController(param_joystickindex))
-
+        // Always attempt to open as a GameController to keep analog enabled
+        if (SDL_IsGameController(param_joystickindex))
+        {
+            GameController = SDL_GameControllerOpen(param_joystickindex);
+        }
+        
+        // Fallback or handle standard joystick if game controller isn't used
+        if (!GameController)
         {
             Joystick = SDL_JoystickOpen(param_joystickindex);
             if (Joystick)
