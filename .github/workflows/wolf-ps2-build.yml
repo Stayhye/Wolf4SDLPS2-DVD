@@ -18,14 +18,6 @@ jobs:
         run: |
           ps2-portman -S sdl sdl_mixer sdl_image || true
 
-      - name: Patch Source Code
-        run: |
-          # Injecting only the necessary controller fix; 
-          # id_vl.c GS hint hacks have been removed to prevent resolution issues.
-          
-          # Fix id_in.h (Controller Button Max)
-          sed -i '1s/^/#define SDL_CONTROLLER_BUTTON_MAX 21\n/' id_in.h
-
       - name: Compile Wolf4SDL
         run: |
           export PS2SDK_PORTS=$PS2DEV/ps2sdk/ports
@@ -47,4 +39,3 @@ jobs:
         with:
           name: Wolf4SDL-PS2-Binary
           path: "**/*.elf"
-
