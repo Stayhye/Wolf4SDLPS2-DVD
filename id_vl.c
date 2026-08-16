@@ -220,8 +220,8 @@ void VL_SetVGAPlaneMode (void)
     screenPitch = screen->pitch;
     bufferPitch = screenBuffer->pitch;
 
-    scaleFactor = screenWidth/320;
-    if(screenHeight/200 < scaleFactor) scaleFactor = screenHeight/200;
+    scaleFactor = 2;
+    #if(screenHeight/200 < scaleFactor) scaleFactor = screenHeight/200;
 
     ylookup = SafeMalloc(screenHeight * sizeof(*ylookup));
     pixelangle = SafeMalloc(screenWidth * sizeof(*pixelangle));
