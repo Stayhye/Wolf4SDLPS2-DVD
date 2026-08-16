@@ -20,17 +20,11 @@ jobs:
 
       - name: Patch Source Code
         run: |
-          # Injecting the missing SDL_HINT and Controller definitions 
+          # Injecting only the necessary controller fix; 
+          # id_vl.c GS hint hacks have been removed to prevent resolution issues.
           
           # Fix id_in.h (Controller Button Max)
           sed -i '1s/^/#define SDL_CONTROLLER_BUTTON_MAX 21\n/' id_in.h
-          
-          # Fix id_vl.c (Provide proper dimension strings or remove if using defaults)
-          sed -i '1s/^/#define SDL_HINT_PS2_GS_HEIGHT "448"\n/' id_vl.c
-          sed -i '1s/^/#define SDL_HINT_PS2_GS_WIDTH "640"\n/' id_vl.c
-          sed -i '1s/^/#define SDL_HINT_PS2_GS_X "0"\n/' id_vl.c
-          sed -i '1s/^/#define SDL_HINT_PS2_GS_Y "0"\n/' id_vl.c
-          sed -i '1s/^/#define _BOOLEAN_DEFINED\n/' id_vl.c
 
       - name: Compile Wolf4SDL
         run: |
@@ -53,3 +47,4 @@ jobs:
         with:
           name: Wolf4SDL-PS2-Binary
           path: "**/*.elf"
+```[cite: 1]
