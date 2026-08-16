@@ -1851,7 +1851,7 @@ void CheckParameters(int argc, char *argv[])
 #if defined(_arch_dreamcast) || defined(_WIN32)
             "                                   (default: current directory)\n"
 #elif defined(PS2)
-            "                                   (default: cdfs:/WOLF)\n"
+            "                                   (default: mc0:/WOLF)\n"
 #else
             "                                   (default: $HOME/.wolf4sdl)\n"
 #endif
