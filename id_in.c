@@ -586,7 +586,8 @@ void IN_ProcessEvents()
 //
 ///////////////////////////////////////////////////////////////////////////
 #ifdef PS2
-#include <libpad.h> // Ensure you include the PS2 pad library header if available in your project
+#include <libpad.h>
+static char padBuf[256] __attribute__((aligned(64)));
 #endif
 
 void IN_Startup(void)
@@ -599,11 +600,15 @@ void IN_Startup(void)
     if(param_joystickindex >= 0 && param_joystickindex < SDL_NumJoysticks())
     {
 #ifdef PS2
-        // Initialize pad subsystem and lock port/slot into analog mode
+        // Initialize the PS2 pad library subsystem
         padInit(0);
-        // If your project uses libpad port/slot mapping (e.g., port 0, slot 0):
-        // padPortOpen(0, 0, padBuf); 
-        // padSetMainMode(0, 0, PAD_MMODE_UNLOCK, PAD_MMODE_LOCK); // Forces analog mode and locks it
+        
+        // Open port 0, slot 0 (adjust if your build handles multiple ports/slots)
+        if (padPortOpen(0, 0, padBuf) == 1)
+        {
+            // Request and lock the controller into analog mode programmatically
+            padSetMainMode(0, 0, PAD_MMODE_UNLOCK, PAD_MMODE_LOCK);
+        }
 
         if (SDL_IsGameController(param_joystickindex))
         {
