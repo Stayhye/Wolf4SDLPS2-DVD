@@ -1881,6 +1881,9 @@ void CheckParameters(int argc, char *argv[])
 #if defined(PS2)
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <kernel.h>
+#include <sifrpc.h>
+#include <fileXio_rpc.h>
 
 static void InitPS2MemoryCard(void)
 {
@@ -1890,40 +1893,26 @@ static void InitPS2MemoryCard(void)
         mkdir("mc0:/WOLF", 0777);
     }
 }
-#endif
-
-int main (int argc, char *argv[])
-
-#if defined(PS2)
-#include <kernel.h>
-#include <sifrpc.h>
-#include <fileXio_rpc.h>
 
 void InitPS2Drivers(void)
 {
     SifInitRpc(0);
-    // Initialize fileXio for robust device handling (mc0:/, cdfs:/)
     fileXioInit();
-    
-    // Load and init memory card modules if not already loaded by your crt0 / loader
-    // (Usually handles mcman and mcserv)
 }
-#endif
-{
-#if defined(_arch_dreamcast)
-    DC_Init();
-#else
-    CheckParameters(argc, argv);
 #endif
 
 int main(int argc, char *argv[])
 {
 #if defined(PS2)
+    InitPS2Drivers();
     InitPS2MemoryCard();
 #endif
 
-    // ... rest of your existing main function code ...
-}
+#if defined(_arch_dreamcast)
+    DC_Init();
+#else
+    CheckParameters(argc, argv);
+#endif
 
     CheckForEpisodes();
 
