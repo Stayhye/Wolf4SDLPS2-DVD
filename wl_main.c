@@ -74,7 +74,7 @@ boolean loadedgame;
 int     mouseadjustment;
 
 char    configdir[256] = "mc0:/WOLF/";
-char    configname[13] = "";
+char    configname[13] = "WOLF";
 
 //
 // Command line parameter variables
@@ -1882,6 +1882,36 @@ int main (int argc, char *argv[])
     DC_Init();
 #else
     CheckParameters(argc, argv);
+#endif
+
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <errno.h>
+
+#if defined(PS2)
+void InitPS2MemoryCard()
+{
+    struct stat st;
+    // Check if the directory exists
+    if (stat("mc0:/WOLF", &st) == -1)
+    {
+        // Directory doesn't exist, create it
+        // Note: PS2 mkdir sometimes ignores the mode argument, but 0777 is standard
+        if (mkdir("mc0:/WOLF", 0777) != 0)
+        {
+            printf("Error creating memory card directory mc0:/WOLF! Errno: %d\n", errno);
+            // Optionally handle the error (e.g., warn the user)
+        }
+        else
+        {
+            printf("Successfully created mc0:/WOLF directory.\n");
+        }
+    }
+    else
+    {
+        printf("Memory card directory mc0:/WOLF already exists.\n");
+    }
+}
 #endif
 
     CheckForEpisodes();
