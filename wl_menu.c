@@ -4019,7 +4019,7 @@ CheckForEpisodes (void)
 #if defined(PS2)
     if (configdir[0] == 0)
     {
-        snprintf(configdir, sizeof(configdir), "cdfs:/WOLF");
+        snprintf(configdir, sizeof(configdir), "mc0:/WOLF");
     }
 #else
     // On Linux like systems, the configdir defaults to $HOME/.wolf4sdl
