@@ -73,8 +73,8 @@ boolean startgame;
 boolean loadedgame;
 int     mouseadjustment;
 
-char    configdir[256] = "";
-char    configname[13] = "config.";
+char    configdir[256] = "mc0:/WOLF/";
+char    configname[13] = "";
 
 //
 // Command line parameter variables
@@ -1849,7 +1849,7 @@ void CheckParameters(int argc, char *argv[])
             "                        (may be useful for some broken mods)\n"
             " --configdir <dir>      Directory where config file and save games are stored\n"
 #if defined(_arch_dreamcast) || defined(_WIN32) || defined(PS2)
-            "                        (default: current directory)\n"
+            "                        (default: $HOME/ WOLF)\n"
 #else
             "                        (default: $HOME/.wolf4sdl)\n"
 #endif
