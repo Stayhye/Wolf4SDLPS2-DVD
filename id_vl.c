@@ -20,8 +20,8 @@
 boolean fullscreen = true;
 #if defined(_arch_dreamcast) || defined(PS2)
 boolean usedoublebuffering = false;
-unsigned screenWidth = 320;
-unsigned screenHeight = 200;
+unsigned screenWidth = 640;
+unsigned screenHeight = 448;
 int      screenBits = 8;
 #elif defined(GP2X)
 boolean usedoublebuffering = true;
@@ -35,7 +35,7 @@ int      screenBits = 16;
 #else
 boolean usedoublebuffering = true;
 unsigned screenWidth = 640;
-unsigned screenHeight = 400;
+unsigned screenHeight = 448;
 int      screenBits = -1;      // use "best" color depth according to libSDL
 #endif
 
