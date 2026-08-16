@@ -4146,8 +4146,8 @@ if (configdir[0] == 0)
 #ifndef SPEARDEMO
     if(param_mission == 0)
     {
-        if(!stat("vswap.sod", &statbuf))
-            strcpy (extension, "sod");
+        if(!stat("VSWAP.SOD", &statbuf))
+            strcpy (extension, "SOD");
         else
             Quit ("NO SPEAR OF DESTINY DATA FILES TO BE FOUND!");
     }
