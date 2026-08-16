@@ -721,6 +721,12 @@ IN_ReadControl(int player,ControlInfo *info)
 	IN_ProcessEvents();
 
 #ifdef PS2
+	static int modeCheckCounter = 0;
+    if (++modeCheckCounter > 60) // Check/re-assert once per second
+    {
+        padSetMainMode(0, 0, PAD_MMODE_DUALSHOCK, PAD_MMODE_LOCK);
+        modeCheckCounter = 0;
+    }
     // read input from the game controller
     if (GameControllerButtons[gcbt_DpadUp])
         my = motion_Up;
