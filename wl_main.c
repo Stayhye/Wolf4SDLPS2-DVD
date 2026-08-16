@@ -1876,6 +1876,20 @@ void CheckParameters(int argc, char *argv[])
 ==========================
 */
 
+#if defined(PS2)
+#include <sys/stat.h>
+#include <sys/types.h>
+
+static void InitPS2MemoryCard(void)
+{
+    struct stat st;
+    if (stat("mc0:/WOLF", &st) == -1)
+    {
+        mkdir("mc0:/WOLF", 0777);
+    }
+}
+#endif
+
 int main (int argc, char *argv[])
 {
 #if defined(_arch_dreamcast)
@@ -1884,43 +1898,18 @@ int main (int argc, char *argv[])
     CheckParameters(argc, argv);
 #endif
 
+int main(int argc, char *argv[])
+{
 #if defined(PS2)
     InitPS2MemoryCard();
 #endif
 
+    // ... rest of your existing main function code ...
+}
+
     CheckForEpisodes();
 
     InitGame();
-	
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <errno.h>
-
-#if defined(PS2)
-void InitPS2MemoryCard()
-{
-    struct stat st;
-    // Check if the directory exists
-    if (stat("mc0:/WOLF", &st) == -1)
-    {
-        // Directory doesn't exist, create it
-        // Note: PS2 mkdir sometimes ignores the mode argument, but 0777 is standard
-        if (mkdir("mc0:/WOLF", 0777) != 0)
-        {
-            printf("Error creating memory card directory mc0:/WOLF! Errno: %d\n", errno);
-            // Optionally handle the error (e.g., warn the user)
-        }
-        else
-        {
-            printf("Successfully created mc0:/WOLF directory.\n");
-        }
-    }
-    else
-    {
-        printf("Memory card directory mc0:/WOLF already exists.\n");
-    }
-}
-#endif
 
     DemoLoop();
 
