@@ -585,6 +585,10 @@ void IN_ProcessEvents()
 //	IN_Startup() - Starts up the Input Mgr
 //
 ///////////////////////////////////////////////////////////////////////////
+#ifdef PS2
+#include <libpad.h> // Ensure you include the PS2 pad library header if available in your project
+#endif
+
 void IN_Startup(void)
 {
     if (IN_Started)
@@ -595,13 +599,17 @@ void IN_Startup(void)
     if(param_joystickindex >= 0 && param_joystickindex < SDL_NumJoysticks())
     {
 #ifdef PS2
-        // Always attempt to open as a GameController to keep analog enabled
+        // Initialize pad subsystem and lock port/slot into analog mode
+        padInit(0);
+        // If your project uses libpad port/slot mapping (e.g., port 0, slot 0):
+        // padPortOpen(0, 0, padBuf); 
+        // padSetMainMode(0, 0, PAD_MMODE_UNLOCK, PAD_MMODE_LOCK); // Forces analog mode and locks it
+
         if (SDL_IsGameController(param_joystickindex))
         {
             GameController = SDL_GameControllerOpen(param_joystickindex);
         }
         
-        // Fallback or handle standard joystick if game controller isn't used
         if (!GameController)
         {
             Joystick = SDL_JoystickOpen(param_joystickindex);
@@ -609,7 +617,7 @@ void IN_Startup(void)
             {
                 JoyNumButtons = SDL_JoystickNumButtons(Joystick);
                 if (JoyNumButtons > 32)
-                    JoyNumButtons = 32; // only up to 32 buttons are supported
+                    JoyNumButtons = 32;
                 JoyNumHats = SDL_JoystickNumHats(Joystick);
                 if (param_joystickhat < -1 || param_joystickhat >= JoyNumHats)
                     Quit("The joystickhat param must be between 0 and %i!", JoyNumHats - 1);
