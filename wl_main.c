@@ -74,7 +74,7 @@ boolean loadedgame;
 int     mouseadjustment;
 
 char    configdir[256] = "mc0:/WOLF/";
-char    configname[13] = "WOLF";
+char    configname[13] = "";
 
 //
 // Command line parameter variables
@@ -1352,21 +1352,13 @@ void NewViewSize (int width)
 {
     viewsize = width;
     if(viewsize == 21)
-    {
-        // Fullscreen 3D view, no status bar
-        SetViewSize(640, 480);
-    }
+        SetViewSize(screenWidth, screenHeight);
     else if(viewsize == 20)
-    {
-        // Full view with status bar (leaves 80 pixels at the bottom for the HUD)
-        SetViewSize(640, 400);
-    }
+        SetViewSize(screenWidth, screenHeight - scaleFactor * STATUSLINES);
     else
-    {
-        // Scaled windowed view fallback
-        SetViewSize(320, 200);
-    }
+        SetViewSize(width*16*screenWidth/320, (unsigned) (width*16*HEIGHTRATIO*screenHeight/200));
 }
+
 
 
 //===========================================================================
@@ -1669,7 +1661,7 @@ void CheckParameters(int argc, char *argv[])
                 screenWidth = atoi(argv[++i]);
                 screenHeight = atoi(argv[++i]);
                 unsigned factor = screenWidth / 320;
-                if(screenWidth % 320 || (screenHeight != 200 * factor && screenHeight != 240 * factor))
+                if(screenWidth % 320 || screenHeight != 200 * factor && screenHeight != 240 * factor)
                     printf("Screen size must be a multiple of 320x200 or 320x240!\n"), hasError = true;
             }
         }
@@ -1856,13 +1848,11 @@ void CheckParameters(int argc, char *argv[])
             " --ignorenumchunks      Ignores the number of chunks in VGAHEAD.*\n"
             "                        (may be useful for some broken mods)\n"
             " --configdir <dir>      Directory where config file and save games are stored\n"
-#if defined(PS2)
-            "                       (default: mc0:/WOLF/)\n"
-#elif defined(_arch_dreamcast) || defined(_WIN32)
-            "                       (default: current directory)\n"
+ #if defined(_arch_dreamcast) || defined(_WIN32) || defined(PS2)
+            "                        (default: current directory)\n"
 #else
-            "                       (default: $HOME/.wolf4sdl)\n"
-#endif
+            "                        (default: $HOME/.wolf4sdl)\n"
+#endif 
 
 #if defined(SPEAR) && !defined(SPEARDEMO)
             " --mission <mission>    Mission number to play (0-3)\n"
@@ -1886,45 +1876,8 @@ void CheckParameters(int argc, char *argv[])
 ==========================
 */
 
-#if defined(PS2)
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <kernel.h>
-#include <sifrpc.h>
-
-static void InitPS2MemoryCard(void)
+int main (int argc, char *argv[])
 {
-    struct stat st;
-    if (stat("mc0:/WOLF", &st) == -1)
-    {
-        mkdir("mc0:/WOLF", 0777);
-    }
-}
-
-static void TestPS2SaveSystem(void)
-{
-    FILE *f = fopen("mc0:/WOLF/test.txt", "w");
-    if (f)
-    {
-        fprintf(f, "PS2 Save Test successful!\n");
-        fclose(f);
-    }
-}
-
-void InitPS2Drivers(void)
-{
-    SifInitRpc(0);
-}
-#endif
-
-int main(int argc, char *argv[])
-{
-#if defined(PS2)
-    InitPS2Drivers();
-    InitPS2MemoryCard();
-    TestPS2SaveSystem();
-#endif
-
 #if defined(_arch_dreamcast)
     DC_Init();
 #else
