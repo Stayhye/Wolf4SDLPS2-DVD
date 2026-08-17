@@ -813,8 +813,8 @@ void DrawPlayBorderSides(void)
 {
     if(viewsize == 21) return;
 
-	const int sw = screenWidth;
-	const int sh = screenHeight;
+	const int sw = 640;
+	const int sh = 430;
 	const int vw = viewwidth;
 	const int vh = viewheight;
 	const int px = scaleFactor; // size of one "pixel"
