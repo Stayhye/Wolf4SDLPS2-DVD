@@ -1352,11 +1352,21 @@ void NewViewSize (int width)
 {
     viewsize = width;
     if(viewsize == 21)
+    {
+        // Fullscreen 3D view, no status bar
         SetViewSize(screenWidth, screenHeight);
+    }
     else if(viewsize == 20)
-        SetViewSize(screenWidth, screenHeight - scaleFactor * STATUSLINES);
+    {
+        // Full view with status bar: ensure it fits within screenHeight
+        // If screenHeight is total window height, make sure view height doesn't overflow
+        int viewH = (screenHeight > scaleFactor * STATUSLINES) ? (screenHeight - scaleFactor * STATUSLINES) : screenHeight;
+        SetViewSize(screenWidth, viewH);
+    }
     else
-        SetViewSize(width*16*screenWidth/320, (unsigned) (width*16*HEIGHTRATIO*screenHeight/200));
+    {
+        SetViewSize(width * 16 * screenWidth / 320, (unsigned)(width * 16 * HEIGHTRATIO * screenHeight / 200));
+    }
 }
 
 
