@@ -79,13 +79,13 @@ mapfiletype *tinf;
 char extension[5]; // Need a string, not constant to change cache files
 char graphext[5];
 char audioext[5];
-static const char gheadname[] = "WOLF/VGAHEAD.";
-static const char gfilename[] = "WOLF/VGAGRAPH.";
-static const char gdictname[] = "WOLF/VGADICT.";
-static const char mheadname[] = "WOLF/MAPHEAD.";
-static const char mfilename[] = "WOLF/MAPTEMP.";
-static const char aheadname[] = "WOLF/AUDIOHED.";
-static const char afilename[] = "WOLF/AUDIOT.";
+static const char gheadname[] = "M1/VGAHEAD.";
+static const char gfilename[] = "M1/VGAGRAPH.";
+static const char gdictname[] = "M1/VGADICT.";
+static const char mheadname[] = "M1/MAPHEAD.";
+static const char mfilename[] = "M1/MAPTEMP.";
+static const char aheadname[] = "M1/AUDIOHED.";
+static const char afilename[] = "M1/AUDIOT.";
 
 void CA_CannotOpen(const char *string);
 
@@ -557,7 +557,7 @@ void CAL_SetupMapFile (void)
 // open the data file
 //
 #ifdef CARMACIZED
-    strcpy(fname, "WOLF/GAMEMAPS.");
+    strcpy(fname, "M1/GAMEMAPS.");
     strcat(fname, extension);
 
     maphandle = open(fname, O_RDONLY | O_BINARY);
