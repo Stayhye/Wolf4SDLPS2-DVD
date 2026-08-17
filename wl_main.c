@@ -1883,7 +1883,6 @@ void CheckParameters(int argc, char *argv[])
 #include <sys/types.h>
 #include <kernel.h>
 #include <sifrpc.h>
-#include <fileXio_rpc.h>
 
 static void InitPS2MemoryCard(void)
 {
@@ -1897,7 +1896,6 @@ static void InitPS2MemoryCard(void)
 void InitPS2Drivers(void)
 {
     SifInitRpc(0);
-    fileXioInit();
 }
 #endif
 
