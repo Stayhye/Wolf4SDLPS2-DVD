@@ -1906,6 +1906,23 @@ int main(int argc, char *argv[])
     InitPS2MemoryCard();
 #endif
 
+#if defined(PS2)
+static void TestPS2SaveSystem(void)
+{
+    FILE *f = fopen("mc0:/WOLF/test.txt", "w");
+    if (f)
+    {
+        fprintf(f, "PS2 Save Test successful!\n");
+        fclose(f);
+        printf("DEBUG: Successfully wrote test file to mc0:/WOLF/test.txt\n");
+    }
+    else
+    {
+        printf("DEBUG ERROR: Failed to open mc0:/WOLF/test.txt for writing! Check errno.\n");
+    }
+}
+#endif
+
 #if defined(_arch_dreamcast)
     DC_Init();
 #else
