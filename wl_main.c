@@ -1893,6 +1893,16 @@ static void InitPS2MemoryCard(void)
     }
 }
 
+static void TestPS2SaveSystem(void)
+{
+    FILE *f = fopen("mc0:/WOLF/test.txt", "w");
+    if (f)
+    {
+        fprintf(f, "PS2 Save Test successful!\n");
+        fclose(f);
+    }
+}
+
 void InitPS2Drivers(void)
 {
     SifInitRpc(0);
@@ -1904,23 +1914,7 @@ int main(int argc, char *argv[])
 #if defined(PS2)
     InitPS2Drivers();
     InitPS2MemoryCard();
-#endif
-
-#if defined(PS2)
-static void TestPS2SaveSystem(void)
-{
-    FILE *f = fopen("mc0:/WOLF/test.txt", "w");
-    if (f)
-    {
-        fprintf(f, "PS2 Save Test successful!\n");
-        fclose(f);
-        printf("DEBUG: Successfully wrote test file to mc0:/WOLF/test.txt\n");
-    }
-    else
-    {
-        printf("DEBUG ERROR: Failed to open mc0:/WOLF/test.txt for writing! Check errno.\n");
-    }
-}
+    TestPS2SaveSystem();
 #endif
 
 #if defined(_arch_dreamcast)
