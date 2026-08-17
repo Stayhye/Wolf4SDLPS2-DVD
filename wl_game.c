@@ -813,8 +813,8 @@ void DrawPlayBorderSides(void)
 {
     if(viewsize == 21) return;
 
-	const int sw = 640;
-	const int sh = 430;
+	const int sw = screenWidth;
+	const int sh = screenHeight;
 	const int vw = viewwidth;
 	const int vh = viewheight;
 	const int px = scaleFactor; // size of one "pixel"
@@ -862,25 +862,25 @@ void DrawPlayBorderSides(void)
 
 void DrawStatusBorder (byte color)
 {
-    int statusborderw = (screenWidth-scaleFactor*320)/2;
+    int statusborderw = (640 - scaleFactor * 320) / 2;
 
-    VWB_BarScaledCoord (0,0,screenWidth,screenHeight-scaleFactor*(STATUSLINES-3),color);
-    VWB_BarScaledCoord (0,screenHeight-scaleFactor*(STATUSLINES-3),
-        statusborderw+scaleFactor*8,scaleFactor*(STATUSLINES-4),color);
-    VWB_BarScaledCoord (0,screenHeight-scaleFactor*2,screenWidth,scaleFactor*2,color);
-    VWB_BarScaledCoord (screenWidth-statusborderw-scaleFactor*8, screenHeight-scaleFactor*(STATUSLINES-3),
-        statusborderw+scaleFactor*8,scaleFactor*(STATUSLINES-4),color);
+    VWB_BarScaledCoord (0, 0, 640, 430 - scaleFactor * (STATUSLINES - 3), color);
+    VWB_BarScaledCoord (0, 430 - scaleFactor * (STATUSLINES - 3),
+        statusborderw + scaleFactor * 8, scaleFactor * (STATUSLINES - 4), color);
+    VWB_BarScaledCoord (0, 430 - scaleFactor * 2, 640, scaleFactor * 2, color);
+    VWB_BarScaledCoord (640 - statusborderw - scaleFactor * 8, 430 - scaleFactor * (STATUSLINES - 3),
+        statusborderw + scaleFactor * 8, scaleFactor * (STATUSLINES - 4), color);
 
-    VWB_BarScaledCoord (statusborderw+scaleFactor*9, screenHeight-scaleFactor*3,
-        scaleFactor*97, scaleFactor*1, color-1);
-    VWB_BarScaledCoord (statusborderw+scaleFactor*106, screenHeight-scaleFactor*3,
-        scaleFactor*161, scaleFactor*1, color-2);
-    VWB_BarScaledCoord (statusborderw+scaleFactor*267, screenHeight-scaleFactor*3,
-        scaleFactor*44, scaleFactor*1, color-3);
-    VWB_BarScaledCoord (screenWidth-statusborderw-scaleFactor*9, screenHeight-scaleFactor*(STATUSLINES-4),
-        scaleFactor*1, scaleFactor*20, color-2);
-    VWB_BarScaledCoord (screenWidth-statusborderw-scaleFactor*9, screenHeight-scaleFactor*(STATUSLINES/2-4),
-        scaleFactor*1, scaleFactor*14, color-3);
+    VWB_BarScaledCoord (statusborderw + scaleFactor * 9, 430 - scaleFactor * 3,
+        scaleFactor * 97, scaleFactor * 1, color - 1);
+    VWB_BarScaledCoord (statusborderw + scaleFactor * 106, 430 - scaleFactor * 3,
+        scaleFactor * 161, scaleFactor * 1, color - 2);
+    VWB_BarScaledCoord (statusborderw + scaleFactor * 267, 430 - scaleFactor * 3,
+        scaleFactor * 44, scaleFactor * 1, color - 3);
+    VWB_BarScaledCoord (640 - statusborderw - scaleFactor * 9, 430 - scaleFactor * (STATUSLINES - 4),
+        scaleFactor * 1, scaleFactor * 20, color - 2);
+    VWB_BarScaledCoord (640 - statusborderw - scaleFactor * 9, 430 - scaleFactor * (STATUSLINES / 2 - 4),
+        scaleFactor * 1, scaleFactor * 14, color - 3);
 }
 
 
