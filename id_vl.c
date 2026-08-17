@@ -320,16 +320,18 @@ void VL_SetColor	(int color, int red, int green, int blue)
         SDL_SetPaletteColors(screenBuffer->format->palette, &col, color, 1);
         SDL_BlitSurface(screenBuffer, NULL, screen, NULL);
 #ifdef PS2
-        SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR1555, SDL_TEXTUREACCESS_STREAMING, screenWidth, screenHeight);
+    SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR1555, SDL_TEXTUREACCESS_STREAMING, screenWidth, screenHeight);
 #else
-        SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, screenBuffer);
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, screenBuffer);
 #endif
-        SDL_RenderCopy(renderer, texture, NULL, NULL);
-        SDL_RenderPresent(renderer);
-        SDL_DestroyTexture(texture);
-#endif
-    }
-}
+
+    // Define a target rectangle that maps the full height cleanly
+    SDL_Rect destRect = { 0, 0, screenWidth, screenHeight };
+    
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, texture, NULL, &destRect);
+    SDL_RenderPresent(renderer);
+    SDL_DestroyTexture(texture);
 
 //===========================================================================
 
