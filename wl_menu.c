@@ -4174,8 +4174,8 @@ if (configdir[0] == 0)
     }
     else
         Quit ("UNSUPPORTED MISSION!");
-    strcpy (graphext, "sod");
-    strcpy (audioext, "sod");
+    strcpy (graphext, "SOD");
+    strcpy (audioext, "SOD");
 #else
     if(!stat("vswap.sdm", &statbuf))
     {
