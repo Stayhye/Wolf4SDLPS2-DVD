@@ -1354,21 +1354,19 @@ void NewViewSize (int width)
     if(viewsize == 21)
     {
         // Fullscreen 3D view, no status bar
-        SetViewSize(screenWidth, screenHeight);
+        SetViewSize(640, 480);
     }
     else if(viewsize == 20)
     {
-        // Full view with status bar: ensure it fits within screenHeight
-        // If screenHeight is total window height, make sure view height doesn't overflow
-        int viewH = (screenHeight > scaleFactor * STATUSLINES) ? (screenHeight - scaleFactor * STATUSLINES) : screenHeight;
-        SetViewSize(screenWidth, viewH);
+        // Full view with status bar (leaves 80 pixels at the bottom for the HUD)
+        SetViewSize(640, 400);
     }
     else
     {
-        SetViewSize(width * 16 * screenWidth / 320, (unsigned)(width * 16 * HEIGHTRATIO * screenHeight / 200));
+        // Scaled windowed view fallback
+        SetViewSize(320, 200);
     }
 }
-
 
 
 //===========================================================================
