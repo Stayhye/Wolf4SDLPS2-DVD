@@ -1878,14 +1878,18 @@ void CheckParameters(int argc, char *argv[])
 ==========================
 */
 
-#if defined(PS2)
+##if defined(PS2)
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <kernel.h>
 #include <sifrpc.h>
+#include <libmc.h>
 
 static void InitPS2MemoryCard(void)
 {
+    // Initialize the memory card library slots
+    mcInit(0);
+
     struct stat st;
     if (stat("mc0:/WOLF", &st) == -1)
     {
@@ -1893,19 +1897,16 @@ static void InitPS2MemoryCard(void)
     }
 }
 
-static void TestPS2SaveSystem(void)
-{
-    FILE *f = fopen("mc0:/WOLF/test.txt", "w");
-    if (f)
-    {
-        fprintf(f, "PS2 Save Test successful!\n");
-        fclose(f);
-    }
-}
-
 void InitPS2Drivers(void)
 {
     SifInitRpc(0);
+
+    // Reset IOP and load standard drivers if needed, 
+    // or initialize built-in mcman/mcserv RPC modules:
+    while (SifBindRpc(NULL, 0x80000001, 0) < 0) {
+        // Wait for IOP RPC to stabilize
+        thedelay(10000); 
+    }
 }
 #endif
 
