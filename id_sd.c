@@ -827,40 +827,83 @@ void SDL_IMFMusicPlayer(void *udata, Uint8 *stream, int len)
 {
     int stereolen = len>>1;
     int sampleslen = stereolen>>1;
-    int16_t *stream16 = (int16_t *) (void *) stream;
+    int16_t *stream16 = (int16_t *) (void *) stream;    // expect correct alignment
+    int loop_guard = 0;
 
-    // Ensure we have a valid initial tick value if this is the first call
-    if(numreadysamples == 0)
-        numreadysamples = samplesPerMusicTick;
-
-    while(sampleslen > 0)
+    while(1)
     {
-        // 1. Process existing samples if available
-        if(numreadysamples > 0)
+        // Safety breaker to prevent infinite loops during high gameplay load
+        if(++loop_guard > 1000)
         {
-            int chunk = (numreadysamples < sampleslen) ? numreadysamples : sampleslen;
-            YM3812UpdateOne(oplChip, stream16, chunk);
-            stream16 += chunk * 2;
-            sampleslen -= chunk;
-            numreadysamples -= chunk;
+            memset(stream16, 0, sampleslen * 4);
+            return;
         }
 
-        // 2. Only run the music sequencer if we still need more samples
-        if(sampleslen > 0)
+        if(numreadysamples)
         {
-            soundTimeCounter--;
-            if(!soundTimeCounter)
+            if(numreadysamples<sampleslen)
             {
-                // ... [Keep your original sequencer logic here] ...
-                soundTimeCounter = 5;
-                if(curAlSound != alSound) { curAlSound = curAlSoundPtr = alSound; curAlLengthLeft = alLengthLeft; }
-                if(curAlSound) { /* ... keep inner logic ... */ }
+                YM3812UpdateOne(oplChip, stream16, numreadysamples);
+                stream16 += numreadysamples*2;
+                sampleslen -= numreadysamples;
             }
-            if(sqActive) { /* ... keep sequencer logic ... */ }
-            
-            // Reset tick counter for next block
-            numreadysamples = samplesPerMusicTick;
+            else
+            {
+                YM3812UpdateOne(oplChip, stream16, sampleslen);
+                numreadysamples -= sampleslen;
+                return;
+            }
         }
+        // ... [keep the rest of the original code below unchanged] ...
+        soundTimeCounter--;
+        if(!soundTimeCounter)
+        {
+            soundTimeCounter = 5;
+            if(curAlSound != alSound)
+            {
+                curAlSound = curAlSoundPtr = alSound;
+                curAlLengthLeft = alLengthLeft;
+            }
+            if(curAlSound)
+            {
+                if(*curAlSoundPtr)
+                {
+                    alOut(alFreqL, *curAlSoundPtr);
+                    alOut(alFreqH, alBlock);
+                }
+                else alOut(alFreqH, 0);
+                curAlSoundPtr++;
+                curAlLengthLeft--;
+                if(!curAlLengthLeft)
+                {
+                    curAlSound = alSound = 0;
+                    SoundNumber = (soundnames) 0;
+                    SoundPriority = 0;
+                    alOut(alFreqH, 0);
+                }
+            }
+        }
+        if(sqActive)
+        {
+            do
+            {
+                if(sqHackTime > alTimeCount) break;
+                sqHackTime = alTimeCount + *(sqHackPtr+1);
+                alOut(*(byte *) sqHackPtr, *(((byte *) sqHackPtr)+1));
+                sqHackPtr += 2;
+                sqHackLen -= 4;
+            }
+            while(sqHackLen>0);
+            alTimeCount++;
+            if(!sqHackLen)
+            {
+                sqHackPtr = sqHack;
+                sqHackLen = sqHackSeqLen;
+                sqHackTime = 0;
+                alTimeCount = 0;
+            }
+        }
+        numreadysamples = samplesPerMusicTick;
     }
 }
 
