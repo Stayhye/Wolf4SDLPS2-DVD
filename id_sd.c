@@ -827,17 +827,20 @@ void SDL_IMFMusicPlayer(void *udata, Uint8 *stream, int len)
 {
     int stereolen = len>>1;
     int sampleslen = stereolen>>1;
-    int16_t *stream16 = (int16_t *) (void *) stream;    // expect correct alignment
+    int16_t *stream16 = (int16_t *) (void *) stream;    
+    int safety_counter = 0; // Prevent infinite spinning under load
 
-    while(1)
+    while(sampleslen > 0 && safety_counter < 10)
     {
+        safety_counter++;
         if(numreadysamples)
         {
-            if(numreadysamples<sampleslen)
+            if(numreadysamples < sampleslen)
             {
                 YM3812UpdateOne(oplChip, stream16, numreadysamples);
                 stream16 += numreadysamples*2;
                 sampleslen -= numreadysamples;
+                numreadysamples = 0;
             }
             else
             {
@@ -846,6 +849,7 @@ void SDL_IMFMusicPlayer(void *udata, Uint8 *stream, int len)
                 return;
             }
         }
+        
         soundTimeCounter--;
         if(!soundTimeCounter)
         {
@@ -874,6 +878,7 @@ void SDL_IMFMusicPlayer(void *udata, Uint8 *stream, int len)
                 }
             }
         }
+        
         if(sqActive)
         {
             do
@@ -884,7 +889,7 @@ void SDL_IMFMusicPlayer(void *udata, Uint8 *stream, int len)
                 sqHackPtr += 2;
                 sqHackLen -= 4;
             }
-            while(sqHackLen>0);
+            while(sqHackLen > 0);
             alTimeCount++;
             if(!sqHackLen)
             {
@@ -895,6 +900,12 @@ void SDL_IMFMusicPlayer(void *udata, Uint8 *stream, int len)
             }
         }
         numreadysamples = samplesPerMusicTick;
+    }
+    
+    // If we hit the safety limit, fill remaining buffer with silence to avoid garbage loops
+    if (sampleslen > 0)
+    {
+        memset(stream16, 0, sampleslen * 4);
     }
 }
 
