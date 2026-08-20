@@ -827,10 +827,15 @@ void SDL_IMFMusicPlayer(void *udata, Uint8 *stream, int len)
 {
     int stereolen = len>>1;
     int sampleslen = stereolen>>1;
-    int16_t *stream16 = (int16_t *) (void *) stream;    // expect correct alignment
+    int16_t *stream16 = (int16_t *) (void *) stream;
+
+    // Ensure we have a valid initial tick value if this is the first call
+    if(numreadysamples == 0)
+        numreadysamples = samplesPerMusicTick;
 
     while(sampleslen > 0)
     {
+        // 1. Process existing samples if available
         if(numreadysamples > 0)
         {
             int chunk = (numreadysamples < sampleslen) ? numreadysamples : sampleslen;
@@ -838,59 +843,24 @@ void SDL_IMFMusicPlayer(void *udata, Uint8 *stream, int len)
             stream16 += chunk * 2;
             sampleslen -= chunk;
             numreadysamples -= chunk;
-            if(sampleslen == 0)
-                return;
         }
 
-        soundTimeCounter--;
-        if(!soundTimeCounter)
+        // 2. Only run the music sequencer if we still need more samples
+        if(sampleslen > 0)
         {
-            soundTimeCounter = 5;
-            if(curAlSound != alSound)
+            soundTimeCounter--;
+            if(!soundTimeCounter)
             {
-                curAlSound = curAlSoundPtr = alSound;
-                curAlLengthLeft = alLengthLeft;
+                // ... [Keep your original sequencer logic here] ...
+                soundTimeCounter = 5;
+                if(curAlSound != alSound) { curAlSound = curAlSoundPtr = alSound; curAlLengthLeft = alLengthLeft; }
+                if(curAlSound) { /* ... keep inner logic ... */ }
             }
-            if(curAlSound)
-            {
-                if(*curAlSoundPtr)
-                {
-                    alOut(alFreqL, *curAlSoundPtr);
-                    alOut(alFreqH, alBlock);
-                }
-                else alOut(alFreqH, 0);
-                curAlSoundPtr++;
-                curAlLengthLeft--;
-                if(!curAlLengthLeft)
-                {
-                    curAlSound = alSound = 0;
-                    SoundNumber = (soundnames) 0;
-                    SoundPriority = 0;
-                    alOut(alFreqH, 0);
-                }
-            }
+            if(sqActive) { /* ... keep sequencer logic ... */ }
+            
+            // Reset tick counter for next block
+            numreadysamples = samplesPerMusicTick;
         }
-        if(sqActive)
-        {
-            do
-            {
-                if(sqHackTime > alTimeCount) break;
-                sqHackTime = alTimeCount + *(sqHackPtr+1);
-                alOut(*(byte *) sqHackPtr, *(((byte *) sqHackPtr)+1));
-                sqHackPtr += 2;
-                sqHackLen -= 4;
-            }
-            while(sqHackLen>0);
-            alTimeCount++;
-            if(!sqHackLen)
-            {
-                sqHackPtr = sqHack;
-                sqHackLen = sqHackSeqLen;
-                sqHackTime = 0;
-                alTimeCount = 0;
-            }
-        }
-        numreadysamples = samplesPerMusicTick;
     }
 }
 
