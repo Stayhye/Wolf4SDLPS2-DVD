@@ -87,12 +87,16 @@ int     param_joystickindex = 0;
 
 #if defined(_arch_dreamcast)
 int     param_joystickhat = 0;
-int     param_samplerate = 11025;       // higher samplerates result in "out of memory"
+int     param_samplerate = 11025;       
 int     param_audiobuffer = 1024;
 #elif defined(GP2X_940)
 int     param_joystickhat = -1;
-int     param_samplerate = 11025;       // higher samplerates result in "out of memory"
+int     param_samplerate = 11025;       
 int     param_audiobuffer = 128;
+#elif defined(PS2) || defined(__PS2__)
+int     param_joystickhat = -1;
+int     param_samplerate = 22050;       // Optimized for PS2 engine load
+int     param_audiobuffer = 1024;
 #else
 int     param_joystickhat = -1;
 int     param_samplerate = 44100;
