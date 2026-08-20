@@ -832,10 +832,10 @@ void SDL_IMFMusicPlayer(void *udata, Uint8 *stream, int len)
 
     while(1)
     {
-        // Safety breaker to prevent infinite loops during high gameplay load
+        // If we spin too much, reset numreadysamples instead of killing audio
         if(++loop_guard > 1000)
         {
-            memset(stream16, 0, sampleslen * 4);
+            numreadysamples = samplesPerMusicTick;
             return;
         }
 
@@ -854,7 +854,6 @@ void SDL_IMFMusicPlayer(void *udata, Uint8 *stream, int len)
                 return;
             }
         }
-        // ... [keep the rest of the original code below unchanged] ...
         soundTimeCounter--;
         if(!soundTimeCounter)
         {
