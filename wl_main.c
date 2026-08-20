@@ -95,7 +95,7 @@ int     param_samplerate = 11025;
 int     param_audiobuffer = 128;
 #elif defined(PS2) || defined(__PS2__)
 int     param_joystickhat = -1;
-int     param_samplerate = 11025;       // Optimized for PS2 engine load
+int     param_samplerate = 22050;       // Optimized for PS2 engine load
 int     param_audiobuffer = 1024;
 #else
 int     param_joystickhat = -1;
