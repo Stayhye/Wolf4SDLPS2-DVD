@@ -827,29 +827,21 @@ void SDL_IMFMusicPlayer(void *udata, Uint8 *stream, int len)
 {
     int stereolen = len>>1;
     int sampleslen = stereolen>>1;
-    int16_t *stream16 = (int16_t *) (void *) stream;    
-    int safety_counter = 0; // Prevent infinite spinning under load
+    int16_t *stream16 = (int16_t *) (void *) stream;    // expect correct alignment
 
-    while(sampleslen > 0 && safety_counter < 10)
+    while(sampleslen > 0)
     {
-        safety_counter++;
-        if(numreadysamples)
+        if(numreadysamples > 0)
         {
-            if(numreadysamples < sampleslen)
-            {
-                YM3812UpdateOne(oplChip, stream16, numreadysamples);
-                stream16 += numreadysamples*2;
-                sampleslen -= numreadysamples;
-                numreadysamples = 0;
-            }
-            else
-            {
-                YM3812UpdateOne(oplChip, stream16, sampleslen);
-                numreadysamples -= sampleslen;
+            int chunk = (numreadysamples < sampleslen) ? numreadysamples : sampleslen;
+            YM3812UpdateOne(oplChip, stream16, chunk);
+            stream16 += chunk * 2;
+            sampleslen -= chunk;
+            numreadysamples -= chunk;
+            if(sampleslen == 0)
                 return;
-            }
         }
-        
+
         soundTimeCounter--;
         if(!soundTimeCounter)
         {
@@ -878,7 +870,6 @@ void SDL_IMFMusicPlayer(void *udata, Uint8 *stream, int len)
                 }
             }
         }
-        
         if(sqActive)
         {
             do
@@ -889,7 +880,7 @@ void SDL_IMFMusicPlayer(void *udata, Uint8 *stream, int len)
                 sqHackPtr += 2;
                 sqHackLen -= 4;
             }
-            while(sqHackLen > 0);
+            while(sqHackLen>0);
             alTimeCount++;
             if(!sqHackLen)
             {
@@ -900,12 +891,6 @@ void SDL_IMFMusicPlayer(void *udata, Uint8 *stream, int len)
             }
         }
         numreadysamples = samplesPerMusicTick;
-    }
-    
-    // If we hit the safety limit, fill remaining buffer with silence to avoid garbage loops
-    if (sampleslen > 0)
-    {
-        memset(stream16, 0, sampleslen * 4);
     }
 }
 
